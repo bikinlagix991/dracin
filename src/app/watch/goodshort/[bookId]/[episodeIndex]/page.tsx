@@ -52,14 +52,15 @@ export default function GoodShortWatchPage() {
   const currentEpisode = episodes[currentEpisodeIndex] || null;
 
   // Build qualities from the current episode's multiVideos
+  const qualityBaseUrl = process.env.NEXT_PUBLIC_API_BASE_URL || "https://api.sansekai.my.id/api";
+
   const qualities = useMemo(() => {
     if (!currentEpisode?.multiVideos) return [];
 
     const available: VideoQuality[] = currentEpisode.multiVideos.map((v: any) => {
-      // Use local proxy to avoid CORS; the proxy rewrites segment URLs too
-      const decryptUrl = `/api/goodshort/stream-proxy?url=${encodeURIComponent(v.filePath)}`;
+      const decryptUrl = `${qualityBaseUrl}/goodshort/decrypt-stream?url=${encodeURIComponent(v.filePath)}`;
       return {
-        name: v.type, // "720p", "540p", "1080p"
+        name: v.type,
         url: decryptUrl,
       };
     });

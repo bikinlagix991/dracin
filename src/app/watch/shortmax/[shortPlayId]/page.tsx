@@ -6,6 +6,7 @@ import { ChevronLeft, ChevronRight, Loader2, AlertCircle, List, Settings } from 
 import Link from "next/link";
 import { useRouter, useParams, useSearchParams } from "next/navigation";
 import Hls from "hls.js";
+import { ShortMaxFragmentLoader } from "@/lib/shortmax-hls-loader";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -56,13 +57,11 @@ export default function ShortMaxWatchPage() {
     return options.sort((a, b) => b.quality - a.quality);
   }, [episodeData]);
 
-  // Get video URL based on selected quality (default 720p)
-  // URLs are already proxied through /api/shortmax/hls by the episode API (AES-128-CBC decryption)
+    // Get raw CDN video URL (streaming langsung dari CDN tanpa Vercel proxy)
   const getVideoUrl = useCallback(() => {
     const urls = episodeData?.episode?.videoUrl;
     if (!urls) return null;
     const qualityKey = `video_${selectedQuality}` as keyof typeof urls;
-    // Try selected quality first, then fallback: 720p > 1080p > 480p
     return urls[qualityKey] || urls.video_720 || urls.video_1080 || urls.video_480 || null;
   }, [episodeData, selectedQuality]);
 
@@ -94,6 +93,7 @@ export default function ShortMaxWatchPage() {
       const hls = new Hls({
         debug: false,
         enableWorker: true,
+        fLoader: ShortMaxFragmentLoader as never,
         xhrSetup: function (xhr) {
           xhr.withCredentials = false;
         },

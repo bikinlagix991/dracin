@@ -18,7 +18,7 @@ export default function FreeReelsWatchPage() {
   const [currentEpisodeIndex, setCurrentEpisodeIndex] = useState(0); 
   const [showEpisodeList, setShowEpisodeList] = useState(false);
   const [videoQuality, setVideoQuality] = useState<'h264' | 'h265'>('h264');
-  const [useProxy, setUseProxy] = useState(true); // Default to true to avoid CORS issues
+  const [useProxy, setUseProxy] = useState(false);
   
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const hlsRef = useRef<Hls | null>(null);

@@ -114,7 +114,9 @@ export default function DramaBoxWatchPage() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [availableQualities.join(",")]);
 
-  // Build the video URL: decrypt the encrypted videoPath via our proxy API
+  const apiBaseUrl = process.env.NEXT_PUBLIC_API_BASE_URL || "https://api.sansekai.my.id/api";
+
+  // Build the video URL: decrypt via upstream API langsung (bukan lewat Vercel)
   const videoUrl = useMemo(() => {
     if (!currentEpisodeData || !defaultCdn) return "";
 
@@ -126,8 +128,7 @@ export default function DramaBoxWatchPage() {
     const rawUrl = videoPath?.videoPath || "";
     if (!rawUrl) return "";
 
-    // Route through our decrypt-stream proxy which streams the decrypted video
-    return `/api/dramabox/decrypt-stream?url=${encodeURIComponent(rawUrl)}`;
+    return `${apiBaseUrl}/dramabox/decrypt-stream?url=${encodeURIComponent(rawUrl)}`;
   }, [currentEpisodeData, defaultCdn, quality]);
 
   const handleVideoEnded = () => {

@@ -59,10 +59,9 @@ export default function DramaNovaWatchPage() {
 
       streamData.PlayInfoList.forEach(info => {
           if (info.MainPlayUrl) {
-              const proxiedUrl = `/api/proxy/video?url=${encodeURIComponent(info.MainPlayUrl)}`;
               availableQualities.push({
                   name: info.Definition || "Normal",
-                  url: proxiedUrl
+                  url: info.MainPlayUrl
               });
           }
       });
@@ -208,11 +207,10 @@ export default function DramaNovaWatchPage() {
                 onEnded={handleVideoEnded}
                 className="w-full h-full object-contain max-h-[100dvh]"
               >
-                  {currentEpisodeDetails?.subtitleTracks?.map((track) => {
-                      const langLabel = track.language === 'in' || track.language === 'id' ? 'Indonesia' : track.language.toUpperCase();
-                      const rawTrackSrc = track.label || track.url || "";
-                      const trackSrc = rawTrackSrc ? `/api/proxy/video?url=${encodeURIComponent(rawTrackSrc)}&type=sub&t=${Date.now()}` : "";
-                      return trackSrc ? (
+           {currentEpisodeDetails?.subtitleTracks?.map((track) => {
+                       const langLabel = track.language === 'in' || track.language === 'id' ? 'Indonesia' : track.language.toUpperCase();
+                       const trackSrc = track.label || track.url || "";
+                       return trackSrc ? (
                         <track 
                             key={track.id} 
                             kind="subtitles" 

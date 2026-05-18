@@ -37,16 +37,6 @@ export async function GET(request: NextRequest) {
 
     const ep = data.episode;
 
-    // Proxy-rewrite video URLs so they go through our HLS proxy for AES decryption
-    const videoUrl: Record<string, string> = {};
-    if (ep.videoUrl) {
-      for (const [quality, url] of Object.entries(ep.videoUrl)) {
-        if (typeof url === "string" && url) {
-          videoUrl[quality] = `/api/shortmax/hls?url=${encodeURIComponent(url)}`;
-        }
-      }
-    }
-
     return encryptedResponse({
       success: true,
       shortPlayId: data.shortPlayId,
@@ -58,7 +48,7 @@ export async function GET(request: NextRequest) {
         duration: ep.duration,
         locked: ep.locked,
         cover: ep.cover,
-        videoUrl,
+        videoUrl: ep.videoUrl || {},
       },
     });
   } catch (error) {
