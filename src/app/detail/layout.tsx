@@ -1,5 +1,3 @@
-import QrisDonationPopup from '@/components/QrisDonationPopup';
-
 export default function DetailLayout({
   children,
 }: {
@@ -8,7 +6,6 @@ export default function DetailLayout({
   return (
     <>
       {children}
-      <QrisDonationPopup />
     </>
   );
 }
