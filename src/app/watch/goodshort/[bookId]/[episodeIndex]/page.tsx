@@ -58,7 +58,7 @@ export default function GoodShortWatchPage() {
     if (!currentEpisode?.multiVideos) return [];
 
     const available: VideoQuality[] = currentEpisode.multiVideos.map((v: any) => {
-      const decryptUrl = `${qualityBaseUrl}/goodshort/decrypt-stream?url=${encodeURIComponent(v.filePath)}`;
+      const decryptUrl = `${qualityBaseUrl}/goodshort/decrypt?url=${encodeURIComponent(v.filePath)}`;
       return {
         name: v.type,
         url: decryptUrl,

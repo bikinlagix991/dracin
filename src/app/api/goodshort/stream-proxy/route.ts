@@ -10,7 +10,7 @@ export async function GET(req: NextRequest) {
       return new NextResponse("url parameter is required", { status: 400 });
     }
 
-    const targetUrl = `${UPSTREAM_API}/goodshort/decrypt-stream?url=${encodeURIComponent(url)}`;
+    const targetUrl = `${UPSTREAM_API}/goodshort/decrypt?url=${encodeURIComponent(url)}`;
 
     const res = await fetch(targetUrl, {
       headers: {
