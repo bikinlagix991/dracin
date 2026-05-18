@@ -128,7 +128,7 @@ export default function DramaBoxWatchPage() {
     const rawUrl = videoPath?.videoPath || "";
     if (!rawUrl) return "";
 
-    return `${apiBaseUrl}/dramabox/decrypt?url=${encodeURIComponent(rawUrl)}`;
+    return `${apiBaseUrl}/dramabox/decrypt-stream?url=${encodeURIComponent(rawUrl)}`;
   }, [currentEpisodeData, defaultCdn, quality]);
 
   const handleVideoEnded = () => {
