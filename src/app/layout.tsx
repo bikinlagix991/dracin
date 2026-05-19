@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import "@/styles/globals.css";
 import { Providers } from "@/components/providers";
+import { AuthProvider } from "@/hooks/useAuth";
+import { RouteGuard } from "@/components/RouteGuard";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { Toaster } from "@/components/ui/toaster";
@@ -8,8 +10,8 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { Suspense } from "react";
 
 export const metadata: Metadata = {
-  title: "SekaiDrama - Streaming Drama Pendek",
-  description: "Nonton drama pendek gratis dan tanpa iklan di SekaiDrama.",
+  title: "Dracin - Streaming Drama Pendek",
+  description: "Nonton drama pendek gratis di Dracin.",
 };
 
 export default function RootLayout({
@@ -25,15 +27,19 @@ export default function RootLayout({
         <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet" />
       </head>
       <body className="font-sans antialiased">
-        <Providers>
-          <Suspense fallback={<div className="h-16" />}>
-            <Header />
-          </Suspense>
-          {children}
-          <Footer />
-          <Toaster />
-          <Sonner />
-        </Providers>
+        <AuthProvider>
+          <Providers>
+            <RouteGuard>
+              <Suspense fallback={<div className="h-16" />}>
+                <Header />
+              </Suspense>
+              {children}
+              <Footer />
+              <Toaster />
+              <Sonner />
+            </RouteGuard>
+          </Providers>
+        </AuthProvider>
       </body>
     </html>
   );

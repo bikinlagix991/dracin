@@ -1,8 +1,9 @@
 "use client";
 
 import { useMemo, useState, useEffect, useRef } from "react";
-import { useParams, useSearchParams, useRouter } from "next/navigation";
+import { useParams, useSearchParams, useRouter, usePathname } from "next/navigation";
 import { useDramaDetail, useEpisodes } from "@/hooks/useDramaDetail";
+import { useSaveWatchHistory } from "@/hooks/useSaveWatchHistory";
 import { ChevronLeft, ChevronRight, Loader2, Settings, List, AlertCircle } from "lucide-react";
 import Link from "next/link";
 import {
@@ -218,6 +219,20 @@ export default function DramaBoxWatchPage() {
   }
 
   const totalEpisodes = episodes?.length || 0;
+
+  const pathname = usePathname();
+  const coverImage = isDirectFormat(detailData) ? detailData.coverWap : isLegacyFormat(detailData) ? detailData.data.book.coverWap : "";
+
+  useSaveWatchHistory({
+    bookId: bookId || "",
+    platform: "dramabox",
+    title: book?.bookName || "",
+    cover: coverImage,
+    episodeNumber: currentEpisode + 1,
+    totalEpisodes,
+    link: `${pathname}?ep=${currentEpisode}`,
+    enabled: !detailLoading && !episodesLoading && !!book,
+  });
 
   // Loading state
   if (detailLoading || episodesLoading) {

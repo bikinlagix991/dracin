@@ -11,6 +11,7 @@ import { FreeReelsHome } from "@/components/FreeReelsHome";
 import { DramaNovaHome } from "@/components/DramaNovaHome";
 import { GoodShortHome } from "@/components/GoodShortHome";
 import { PineDramaHome } from "@/components/PineDramaHome";
+import { ContinueWatching } from "@/components/ContinueWatching";
 import { useLatestDramas, useTrendingDramas, useDubindoDramas } from "@/hooks/useDramas";
 import { usePlatform } from "@/hooks/usePlatform";
 import { InfiniteDramaSection } from "@/components/InfiniteDramaSection";
@@ -31,6 +32,11 @@ export default function HomeContent() {
         <div className="container mx-auto">
           <PlatformSelector />
         </div>
+      </div>
+
+      {/* Continue Watching */}
+      <div className="container mx-auto px-4 py-6">
+        <ContinueWatching />
       </div>
 
       {/* PineDrama Content */}

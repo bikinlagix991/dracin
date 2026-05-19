@@ -1,8 +1,9 @@
 "use client";
 
 import { useState, useEffect, useRef, useCallback } from "react";
-import { useParams, useRouter } from "next/navigation";
+import { useParams, useRouter, usePathname } from "next/navigation";
 import { usePineDramaDetail, usePineDramaEpisode } from "@/hooks/usePineDrama";
+import { useSaveWatchHistory } from "@/hooks/useSaveWatchHistory";
 import { ChevronLeft, ChevronRight, Loader2, List, AlertCircle } from "lucide-react";
 import Link from "next/link";
 
@@ -37,6 +38,18 @@ export default function PineDramaWatchPage() {
 
   // Fetch current episode data
   const { data: episodeData, isLoading: episodeLoading } = usePineDramaEpisode(collectionId, currentEpisode);
+
+  const pathname = usePathname();
+  useSaveWatchHistory({
+    bookId: collectionId,
+    platform: "pinedrama",
+    title: dramaTitle,
+    cover: detailData?.cover || "",
+    episodeNumber: currentEpisode,
+    totalEpisodes,
+    link: `${pathname}`,
+    enabled: !episodeLoading && !!episodeData,
+  });
 
   // Determine video URL: best_url first, fallback to indo_hd_cdn_urls
   const videoUrl = episodeData?.best_url

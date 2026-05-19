@@ -4,7 +4,7 @@ import { useState } from "react";
 import { createPortal } from "react-dom";
 import Link from "next/link";
 import Image from "next/image";
-import { Search, X, Play } from "lucide-react";
+import { Search, X, Play, LogOut, Shield, ShieldOff } from "lucide-react";
 import { useSearchDramas } from "@/hooks/useDramas";
 import { useReelShortSearch } from "@/hooks/useReelShort";
 import { useNetShortSearch } from "@/hooks/useNetShort";
@@ -15,6 +15,7 @@ import { useDramaNovaSearch } from "@/hooks/useDramaNova";
 import { useGoodShortSearch } from "@/hooks/useGoodShort";
 import { usePineDramaSearch } from "@/hooks/usePineDrama";
 import { usePlatform } from "@/hooks/usePlatform";
+import { useAuth } from "@/hooks/useAuth";
 import { useDebounce } from "@/hooks/useDebounce";
 import { usePathname } from "next/navigation";
 import { optimizeThumb } from "@/lib/image-utils";
@@ -28,6 +29,7 @@ export function Header() {
 
   // Platform context
   const { isPineDrama, isDramaBox, isReelShort, isShortMax, isNetShort, isMelolo, isFreeReels, isDramaNova, isGoodShort, platformInfo } = usePlatform();
+  const { isLoggedIn, logout, loginRequired, toggleLoginRequired } = useAuth();
 
   // Search based on platform
   const { data: dramaBoxResults, isLoading: isSearchingDramaBox } = useSearchDramas(
@@ -126,7 +128,7 @@ export function Header() {
             </span>
           </Link>
 
-          {/* Search Button Only - No Nav Links */}
+          {/* Search Button + Admin Controls */}
           <div className="flex items-center gap-2">
             <button
               onClick={() => setSearchOpen(true)}
@@ -135,6 +137,30 @@ export function Header() {
             >
               <Search className="w-5 h-5" />
             </button>
+
+            {isLoggedIn && (
+              <>
+                <button
+                  onClick={toggleLoginRequired}
+                  className="p-2.5 rounded-xl hover:bg-muted/50 transition-colors"
+                  aria-label={loginRequired ? "Disable login" : "Enable login"}
+                  title={loginRequired ? "Login wajib: ON" : "Login wajib: OFF"}
+                >
+                  {loginRequired ? (
+                    <Shield className="w-5 h-5 text-green-400" />
+                  ) : (
+                    <ShieldOff className="w-5 h-5 text-muted-foreground" />
+                  )}
+                </button>
+                <button
+                  onClick={logout}
+                  className="p-2.5 rounded-xl hover:bg-muted/50 transition-colors"
+                  aria-label="Logout"
+                >
+                  <LogOut className="w-5 h-5" />
+                </button>
+              </>
+            )}
           </div>
         </div>
       </div>

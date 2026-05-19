@@ -2,9 +2,10 @@
 
 import { useState, useEffect, useRef, useCallback, useMemo } from "react";
 import { useShortMaxEpisode, useShortMaxDetail } from "@/hooks/useShortMax";
+import { useSaveWatchHistory } from "@/hooks/useSaveWatchHistory";
 import { ChevronLeft, ChevronRight, Loader2, AlertCircle, List, Settings } from "lucide-react";
 import Link from "next/link";
-import { useRouter, useParams, useSearchParams } from "next/navigation";
+import { useRouter, useParams, useSearchParams, usePathname } from "next/navigation";
 import Hls from "hls.js";
 import { ShortMaxFragmentLoader } from "@/lib/shortmax-hls-loader";
 import {
@@ -45,6 +46,19 @@ export default function ShortMaxWatchPage() {
 
   const totalEpisodes = detailData?.totalEpisodes || episodeData?.totalEpisodes || 1;
   const title = detailData?.title || episodeData?.shortPlayName || "Loading...";
+
+  const pathname = usePathname();
+  const coverImage = detailData?.cover || episodeData?.episode?.cover || "";
+  useSaveWatchHistory({
+    bookId: shortPlayId || "",
+    platform: "shortmax",
+    title,
+    cover: coverImage,
+    episodeNumber: currentEpisode,
+    totalEpisodes,
+    link: `${pathname}?ep=${currentEpisode}`,
+    enabled: !!episodeData,
+  });
 
   // Available quality options from episode data
   const qualityOptions = useMemo(() => {
