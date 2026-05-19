@@ -2,7 +2,7 @@
 
 import { create } from "zustand";
 
-export type Platform = "pinedrama" | "dramabox" | "reelshort" | "shortmax" | "netshort" | "melolo" | "freereels" | "dramanova" | "goodshort";
+export type Platform = "pinedrama" | "dramabox" | "reelshort" | "shortmax" | "netshort" | "freereels" | "dramanova" | "goodshort";
 
 export interface PlatformInfo {
   id: Platform;
@@ -42,12 +42,13 @@ export const PLATFORMS: PlatformInfo[] = [
     logo: "/netshort.webp",
     apiBase: "/api/netshort",
   },
-  {
-    id: "melolo",
-    name: "Melolo",
-    logo: "/melolo.webp",
-    apiBase: "/api/melolo",
-  },
+  // Melolo: API upstream tidak support (endpoint dikomentari di api.sansekai.my.id)
+  // {
+  //   id: "melolo",
+  //   name: "Melolo",
+  //   logo: "/melolo.webp",
+  //   apiBase: "/api/melolo",
+  // },
 
   {
     id: "freereels",
