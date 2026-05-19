@@ -174,17 +174,30 @@ export function useFreeReelsDetail(bookId: string) {
 }
 
 export function useFreeReelsSearch(query: string) {
+  const { data: forYouData } = useFreeReelsForYou();
+
   return useQuery({
     queryKey: ["freereels", "search", query],
-    queryFn: () => fetchJson<FreeReelsSearchResponse>(`/api/freereels/search?query=${encodeURIComponent(query)}`),
-    select: (response) => {
-        // Transform search items to FreeReelsItem format
-        return response.data?.items?.map(item => ({
+    queryFn: async () => {
+      try {
+        const res = await fetchJson<FreeReelsSearchResponse>(`/api/freereels/search?query=${encodeURIComponent(query)}`);
+        if (res.data?.items?.length) {
+          return res.data.items.map(item => ({
             ...item,
             key: item.id,
             title: item.name,
-            follow_count: item.follow_count || 0,
-        })) as FreeReelsItem[] || [];
+          })) as FreeReelsItem[];
+        }
+      } catch {}
+
+      // Fallback: client-side filter dari data yang sudah di-load
+      if (forYouData?.data?.items) {
+        const q = query.toLowerCase();
+        return forYouData.data.items.filter(
+          item => item.title?.toLowerCase().includes(q)
+        );
+      }
+      return [];
     },
     enabled: !!query,
     staleTime: 60 * 1000,
