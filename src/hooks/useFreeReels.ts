@@ -186,7 +186,8 @@ export function useFreeReelsSearch(query: string) {
             ...item,
             key: item.id,
             title: item.name,
-          })) as FreeReelsItem[];
+            follow_count: (item as any).follow_count || 0,
+          })) as unknown as FreeReelsItem[];
         }
       } catch {}
 

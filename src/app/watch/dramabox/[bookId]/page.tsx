@@ -221,7 +221,7 @@ export default function DramaBoxWatchPage() {
   const totalEpisodes = episodes?.length || 0;
 
   const pathname = usePathname();
-  const coverImage = isDirectFormat(detailData) ? detailData.coverWap : isLegacyFormat(detailData) ? detailData.data.book.coverWap : "";
+  const coverImage = (detailData as any)?.coverWap || (detailData as any)?.data?.book?.coverWap || "";
 
   useSaveWatchHistory({
     bookId: bookId || "",
