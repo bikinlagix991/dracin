@@ -1,5 +1,5 @@
-import { safeJson, encryptedResponse } from "@/lib/api-utils";
-import { NextRequest } from "next/server";
+import { safeJson } from "@/lib/api-utils";
+import { NextRequest, NextResponse } from "next/server";
 
 export const dynamic = 'force-dynamic';
 
@@ -15,7 +15,7 @@ export async function GET(request: NextRequest) {
     });
 
     if (!response.ok) {
-        return encryptedResponse({ 
+        return NextResponse.json({ 
             books: [], 
             has_more: false, 
             next_offset: 0 
@@ -23,7 +23,7 @@ export async function GET(request: NextRequest) {
     }
 
     const json = await safeJson<any>(response);
-    const data = json.data;
+    const data = json.data || json;
 
     let books: any[] = [];
     
@@ -46,14 +46,14 @@ export async function GET(request: NextRequest) {
     const hasMore = data?.has_more ?? data?.cell?.has_more ?? false;
     const nextOffset = data?.next_offset ?? data?.cell?.next_offset ?? 0;
 
-    return encryptedResponse({
+    return NextResponse.json({
       books: books,
       has_more: hasMore,
       next_offset: nextOffset,
     });
   } catch (error) {
     console.error("Melolo ForYou Error:", error);
-    return encryptedResponse({ 
+    return NextResponse.json({ 
         books: [], 
         has_more: false, 
         next_offset: 0 
