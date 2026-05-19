@@ -4,8 +4,9 @@ import { useState, useEffect, useRef, useCallback, useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { ChevronLeft, ChevronRight, Loader2, AlertCircle, List, Settings } from "lucide-react";
 import Link from "next/link";
-import { useRouter, useParams, useSearchParams } from "next/navigation";
+import { useRouter, useParams, useSearchParams, usePathname } from "next/navigation";
 import Hls from "hls.js";
+import { useSaveWatchHistory } from "@/hooks/useSaveWatchHistory";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -96,6 +97,18 @@ export default function ReelShortWatchPage() {
     queryKey: ["reelshort", "episode", bookId, currentEpisode],
     queryFn: () => fetchEpisode(bookId || "", currentEpisode),
     enabled: !!bookId && currentEpisode > 0,
+  });
+
+  const pathname = usePathname();
+  useSaveWatchHistory({
+    bookId: bookId || "",
+    platform: "reelshort",
+    title: detailData?.title || "",
+    cover: detailData?.cover || "",
+    episodeNumber: currentEpisode,
+    totalEpisodes: detailData?.totalEpisodes || 0,
+    link: `${pathname}?ep=${currentEpisode}`,
+    enabled: !!detailData && !!episodeData,
   });
 
   // Get available quality options

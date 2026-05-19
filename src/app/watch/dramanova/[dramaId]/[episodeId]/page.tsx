@@ -1,8 +1,9 @@
 "use client";
 
 import { useState, useEffect, useRef, useMemo } from "react";
-import { useParams, useRouter } from "next/navigation";
+import { useParams, useRouter, usePathname } from "next/navigation";
 import { useDramaNovaDetail, useDramaNovaVideo } from "@/hooks/useDramaNova";
+import { useSaveWatchHistory } from "@/hooks/useSaveWatchHistory";
 import { ChevronLeft, ChevronRight, Loader2, List, AlertCircle, Settings } from "lucide-react";
 import Link from "next/link";
 import {
@@ -49,6 +50,19 @@ export default function DramaNovaWatchPage() {
 
   // Only execute video fetch if we have a valid fileId
   const { data: streamData, isLoading: streamLoading, isFetching: streamFetching } = useDramaNovaVideo(currentFileId);
+
+  const pathname = usePathname();
+  const totalEpisodes = dramaDetail?.totalEpisodes || dramaDetail?.episodes?.length || 0;
+  useSaveWatchHistory({
+    bookId: params.dramaId || "",
+    platform: "dramanova",
+    title: dramaDetail?.title || "",
+    cover: dramaDetail?.posterImgUrl || "",
+    episodeNumber: currentEpisodeIndex + 1,
+    totalEpisodes,
+    link: `${pathname}`,
+    enabled: !detailLoading && !!dramaDetail,
+  });
 
   // Process video qualities
   const qualities = useMemo(() => {
@@ -98,7 +112,6 @@ export default function DramaNovaWatchPage() {
     }
   }, [qualities, selectedQuality]);
   
-  const totalEpisodes = dramaDetail?.totalEpisodes || dramaDetail?.episodes?.length || 0;
 
   const handleEpisodeChange = (index: number) => {
     if (!dramaDetail?.episodes?.[index]) return;

@@ -1,8 +1,9 @@
 "use client";
 
 import { useState, useEffect, useRef, useMemo, useCallback } from "react";
-import { useParams, useRouter } from "next/navigation";
+import { useParams, useRouter, usePathname } from "next/navigation";
 import { useGoodShortEpisodes } from "@/hooks/useGoodShort";
+import { useSaveWatchHistory } from "@/hooks/useSaveWatchHistory";
 import { ChevronLeft, ChevronRight, Loader2, List, AlertCircle, Settings } from "lucide-react";
 import Link from "next/link";
 import Hls from "hls.js";
@@ -50,6 +51,18 @@ export default function GoodShortWatchPage() {
   const dramaTitle = episodeData?.bookName || "Loading...";
 
   const currentEpisode = episodes[currentEpisodeIndex] || null;
+
+  const pathname = usePathname();
+  useSaveWatchHistory({
+    bookId: params.bookId || "",
+    platform: "goodshort",
+    title: dramaTitle,
+    cover: episodeData?.cover || "",
+    episodeNumber: currentEpisodeIndex + 1,
+    totalEpisodes,
+    link: `${pathname}`,
+    enabled: !episodesLoading && !!episodeData,
+  });
 
   // Build qualities from the current episode's multiVideos
   const qualityBaseUrl = process.env.NEXT_PUBLIC_API_BASE_URL || "https://api.sansekai.my.id/api";

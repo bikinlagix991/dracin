@@ -1,8 +1,9 @@
 "use client";
 
 import { useMemo, useState, useEffect, useRef, useCallback } from "react";
-import { useParams, useRouter, useSearchParams } from "next/navigation";
+import { useParams, useRouter, useSearchParams, usePathname } from "next/navigation";
 import { useFreeReelsDetail } from "@/hooks/useFreeReels";
+import { useSaveWatchHistory } from "@/hooks/useSaveWatchHistory";
 import { ChevronLeft, ChevronRight, Loader2, List, AlertCircle } from "lucide-react";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
@@ -45,6 +46,18 @@ export default function FreeReelsWatchPage() {
   const currentEpisodeData = useMemo(() => {
     return episodes[currentEpisodeIndex] || episodes[0] || null;
   }, [episodes, currentEpisodeIndex]);
+
+  const pathname = usePathname();
+  useSaveWatchHistory({
+    bookId: bookId,
+    platform: "freereels",
+    title: drama?.title || "",
+    cover: drama?.cover || "",
+    episodeNumber: currentEpisodeIndex + 1,
+    totalEpisodes,
+    link: `${pathname}?ep=${currentEpisodeIndex + 1}`,
+    enabled: !isLoading && !!drama,
+  });
 
   // Determine current video URL based on quality selection
   const currentVideoUrl = useMemo(() => {

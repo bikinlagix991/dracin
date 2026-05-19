@@ -2,8 +2,9 @@
 "use client";
 
 import { useState, useEffect, useRef, useMemo } from "react";
-import { useParams, useRouter } from "next/navigation";
+import { useParams, useRouter, usePathname } from "next/navigation";
 import { useMeloloDetail, useMeloloStream } from "@/hooks/useMelolo";
+import { useSaveWatchHistory } from "@/hooks/useSaveWatchHistory";
 import { ChevronLeft, ChevronRight, Loader2, List, AlertCircle, Settings } from "lucide-react";
 import Link from "next/link";
 import {
@@ -41,6 +42,19 @@ export default function MeloloWatchPage() {
 
   const drama = detailData?.data?.video_data;
   const rawVideoModel = streamData?.data?.video_model;
+
+  const pathname = usePathname();
+  const currentEpisodeIndex = drama?.video_list?.findIndex(v => v.vid === currentVideoId) ?? -1;
+  useSaveWatchHistory({
+    bookId: params.bookId || "",
+    platform: "melolo",
+    title: drama?.series_title || "",
+    cover: drama?.series_cover || "",
+    episodeNumber: currentEpisodeIndex + 1,
+    totalEpisodes: drama?.video_list?.length || 0,
+    link: `${pathname}`,
+    enabled: !detailLoading && !!drama,
+  });
 
   // Process video qualities
   const qualities = useMemo(() => {
@@ -130,8 +144,6 @@ export default function MeloloWatchPage() {
     }
   }, [qualities, selectedQuality]);
   
-  // Find current episode index
-  const currentEpisodeIndex = drama?.video_list?.findIndex(v => v.vid === currentVideoId) ?? -1;
   const totalEpisodes = drama?.video_list?.length || 0;
 
   const handleEpisodeChange = (index: number) => {

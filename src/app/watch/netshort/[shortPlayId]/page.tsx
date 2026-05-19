@@ -2,9 +2,10 @@
 
 import { useState, useEffect, useRef, useCallback } from "react";
 import { useNetShortDetail } from "@/hooks/useNetShort";
+import { useSaveWatchHistory } from "@/hooks/useSaveWatchHistory";
 import { ChevronLeft, ChevronRight, Loader2, AlertCircle, List } from "lucide-react";
 import Link from "next/link";
-import { useRouter, useParams, useSearchParams } from "next/navigation";
+import { useRouter, useParams, useSearchParams, usePathname } from "next/navigation";
 import Hls from "hls.js";
 
 export default function NetShortWatchPage() {
@@ -40,6 +41,18 @@ export default function NetShortWatchPage() {
   const currentEpisodeData = data?.episodes?.find(
     (ep) => ep.episodeNo === currentEpisode
   );
+
+  const pathname = usePathname();
+  useSaveWatchHistory({
+    bookId: shortPlayId || "",
+    platform: "netshort",
+    title: data?.title || "",
+    cover: data?.cover || "",
+    episodeNumber: currentEpisode,
+    totalEpisodes: data?.totalEpisodes || 0,
+    link: `${pathname}?ep=${currentEpisode}`,
+    enabled: !isLoading && !!data,
+  });
 
   // Handle video ended - auto next episode
   const handleVideoEnded = useCallback(() => {
