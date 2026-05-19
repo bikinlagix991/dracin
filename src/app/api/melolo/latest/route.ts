@@ -1,11 +1,11 @@
-
 import { type NextRequest } from "next/server";
 import { encryptedResponse } from "@/lib/api-utils";
 
+const MELOLO_API = "https://melolo-api-azure.vercel.app/api";
+
 export async function GET(request: NextRequest) {
   try {
-    const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL || "https://api.sansekai.my.id/api";
-    const response = await fetch(`${baseUrl}/melolo/latest`);
+    const response = await fetch(`${MELOLO_API}/melolo/latest`);
     const data = await response.json();
     return encryptedResponse(data);
   } catch (error) {
